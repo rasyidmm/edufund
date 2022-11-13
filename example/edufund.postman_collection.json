@@ -1,0 +1,526 @@
+{
+	"info": {
+		"_postman_id": "e184a3f2-5f86-4a70-93d2-7050aee28cc9",
+		"name": "edufund",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9016371"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fullname\": \"edufund\",\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\",\n    \"try_password\": \"123412341234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://172.27.0.2:8080/user/register",
+					"protocol": "http",
+					"host": [
+						"172",
+						"27",
+						"0",
+						"2"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "error register fullname is less than 2 characters",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullname\": \"e\",\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\",\n    \"try_password\": \"123412341234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/register",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:29:25 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "38"
+						}
+					],
+					"cookie": [],
+					"body": "\"Name should be 2 characters or more\""
+				},
+				{
+					"name": "error register username is not emai",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullname\": \"edufund\",\n    \"username\": \"edufundgmail.com\",\n    \"password\": \"123412341234\",\n    \"try_password\": \"123412341234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/register",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:31:05 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						}
+					],
+					"cookie": [],
+					"body": "\"Please provide a valid email address\""
+				},
+				{
+					"name": "erro register password is less than 12 characters",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullname\": \"edufund\",\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"12341234123\",\n    \"try_password\": \"123412341234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/register",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:31:59 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "49"
+						}
+					],
+					"cookie": [],
+					"body": "\"Password should be at least 12 characters long\""
+				},
+				{
+					"name": "error register confirmation password is not equal to password",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullname\": \"edufund\",\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\",\n    \"try_password\": \"1234123412345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/register",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:32:58 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						}
+					],
+					"cookie": [],
+					"body": "\"Confirmation password does not match\""
+				},
+				{
+					"name": "succesfuly register",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullname\": \"edufund\",\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\",\n    \"try_password\": \"123412341234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/register",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:33:50 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "57"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status_code\": \"00\",\n    \"status_desc\": \"Transaction success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://172.27.0.2:8080/user/login",
+					"protocol": "http",
+					"host": [
+						"172",
+						"27",
+						"0",
+						"2"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "error login username is not email",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"rasyidgmail.com\",\n    \"password\": \"123412341234\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/login",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:36:39 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						}
+					],
+					"cookie": [],
+					"body": "\"Please provide a valid email address\""
+				},
+				{
+					"name": "erro login password is less than 12 characters",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"rasyid@gmail.com\",\n    \"password\": \"12341234123\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/login",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:37:21 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "49"
+						}
+					],
+					"cookie": [],
+					"body": "\"Password should be at least 12 characters long\""
+				},
+				{
+					"name": "error login username does not exists OR password does not match in the databas",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"rasyids@gmail.com\",\n    \"password\": \"123412341234\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/login",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:38:19 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "30"
+						}
+					],
+					"cookie": [],
+					"body": "\"Invalid username / password\""
+				},
+				{
+					"name": "succesfuly login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"edufund@gmail.com\",\n    \"password\": \"123412341234\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://172.27.0.2:8080/user/login",
+							"protocol": "http",
+							"host": [
+								"172",
+								"27",
+								"0",
+								"2"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 13 Nov 2022 11:39:23 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "392"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Fullname\": \"edufund\",\n    \"Username\": \"edufund@gmail.com\",\n    \"Token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVkdWZ1bmRAZ21haWwuY29tIiwiZnVsbG5hbWUiOiJlZHVmdW5kQGdtYWlsLmNvbSIsInV1aWQiOiI2YmY2NzZhMS0zNmIxLTQ3ODctODVlZS1iMzgzMThmNTIxYWMiLCJleHAiOjE2NjgzNTc1NjMsImlhdCI6MTY2ODMzOTU2MywibmJmIjoxNjY4MzM5NTYzfQ.EiGwjXUD4LRqUmqmwWBtBFL1PaynFDcwTtgyBXu07jg\",\n    \"Expired\": \"2022-11-13 16:39:23\"\n}"
+				}
+			]
+		}
+	]
+}
