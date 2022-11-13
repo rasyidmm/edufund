@@ -2,7 +2,7 @@
 - [Installing](#installing)
 - [Running Ip and Port](#IpAndPort)
 - [Register And Login](#register&login)
-- [unittest](#unittest)
+- [Unittest](#unittest)
 
 ## installing
     untuk menjalankan aplikasi ini sebagai berkut
@@ -18,6 +18,7 @@
 
 ## register&login
     dapat melakukan dengen postman
+  - [Link Postman](https://github.com/rasyidmm/edufund/blob/master/example/edufund.postman_collection.json)
     
 ## unittest
 
