@@ -1,0 +1,9 @@
+database:
+  Edufund:
+    mysql:
+      host: 172.27.0.3
+      port: 3306
+      username: root
+      password: P@ssw0rd
+      dbname: edufund-db
+      adapter: mysql
