@@ -1,6 +1,8 @@
 package repository
 
+import "github.com/opentracing/opentracing-go"
+
 type UsersRepository interface {
-	Register(interface{}) (interface{}, error)
-	GetUserByUsername(interface{}) (interface{}, error)
+	Register(opentracing.Span, interface{}) (interface{}, error)
+	GetUserByUsername(opentracing.Span, interface{}) (interface{}, error)
 }

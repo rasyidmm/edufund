@@ -44,10 +44,9 @@ type (
 	}
 )
 
-func Init(e *echo.Echo, Service string, skipper middleware.Skipper) (opentracing.Tracer, io.Closer) {
-
-	varTrace := config.Configuration{
-		ServiceName: Service,
+func Init(service string) (opentracing.Tracer, io.Closer) {
+	defcfg := config.Configuration{
+		ServiceName: service,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
@@ -58,7 +57,7 @@ func Init(e *echo.Echo, Service string, skipper middleware.Skipper) (opentracing
 		},
 	}
 
-	cfg, err := varTrace.FromEnv()
+	cfg, err := defcfg.FromEnv()
 	if err != nil {
 		panic("Could not parse Jaeger env vars: " + err.Error())
 	}
@@ -66,18 +65,15 @@ func Init(e *echo.Echo, Service string, skipper middleware.Skipper) (opentracing
 	if err != nil {
 		panic("Could not initialize jaeger tracer: " + err.Error())
 	}
-	opentracing.SetGlobalTracer(tracer)
-	e.Use(TraceWithConfig(Service, TraceConfig{
-		Tracer:  tracer,
-		Skipper: skipper,
-	}))
 
 	return tracer, closer
 }
 
-func CreateRootSpan(ctx echo.Context, name string) (opentracing.Span, opentracing.Tracer) {
-	parentSpan := opentracing.SpanFromContext(ctx.Request().Context())
+func CreateRootSpan(ctx context.Context, name string) (opentracing.Span, opentracing.Tracer) {
+
+	parentSpan := opentracing.SpanFromContext(ctx)
 	tracer := parentSpan.Tracer()
+	parentSpan.SetTag("name", name)
 
 	// Get caller function name, file and line
 	pc := make([]uintptr, 15)
@@ -90,19 +86,17 @@ func CreateRootSpan(ctx echo.Context, name string) (opentracing.Span, opentracin
 	return parentSpan, tracer
 }
 
-func StartRootSpan(ctx *echo.Echo, name string) (context.Context, io.Closer, opentracing.Span) {
-	tracer, closer := Init(ctx, name, nil)
-	sp := tracer.StartSpan(string(enum.StartService))
-
-	var jj context.Context
-
-	return jj, closer, sp
+func StartRootSpan(ctx context.Context, name string) (context.Context, io.Closer, opentracing.Span) {
+	tracer, closer := Init(name)
+	sp := tracer.StartSpan(string("SERVICE"))
+	ctx = opentracing.ContextWithSpan(ctx, sp)
+	return ctx, closer, sp
 }
 
 // CreateChildSpan creates a new opentracing span adding tags for the span name and caller details. Returns a Span.
 // User must call `defer sp.Finish()`
-func CreateChildSpan(ctx echo.Context, name string) opentracing.Span {
-	parentSpan := opentracing.SpanFromContext(ctx.Request().Context())
+func CreateChildSpan(ctx context.Context, name string) opentracing.Span {
+	parentSpan := opentracing.SpanFromContext(ctx)
 	sp := opentracing.StartSpan(
 		name,
 		opentracing.ChildOf(parentSpan.Context()))

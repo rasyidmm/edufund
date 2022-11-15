@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/opentracing/opentracing-go"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -8,7 +9,7 @@ type MockUserRepository struct {
 	mock.Mock
 }
 
-func (m *MockUserRepository) Register(in interface{}) (interface{}, error) {
+func (m *MockUserRepository) Register(span opentracing.Span, in interface{}) (interface{}, error) {
 	call := m.Called(in)
 	res := call.Get(0)
 	if res == nil {
@@ -17,7 +18,7 @@ func (m *MockUserRepository) Register(in interface{}) (interface{}, error) {
 	return res, nil
 
 }
-func (m *MockUserRepository) GetUserByUsername(in interface{}) (interface{}, error) {
+func (m *MockUserRepository) GetUserByUsername(span opentracing.Span, in interface{}) (interface{}, error) {
 	call := m.Called(in)
 	res := call.Get(0)
 	if res == nil {

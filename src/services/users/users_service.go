@@ -1,9 +1,12 @@
 package users
 
 import (
+	"context"
 	"edufund/src/domain/entity"
 	"edufund/src/domain/repository"
+	"edufund/src/shared/enum"
 	"edufund/src/shared/jwt_builder"
+	"edufund/src/shared/tracing"
 	"edufund/src/shared/util"
 	"errors"
 	"github.com/mitchellh/mapstructure"
@@ -44,7 +47,10 @@ func NewUserService(r repository.UsersRepository, o UsersOutputPort) *UserServic
 	}
 }
 
-func (s *UserService) Register(in interface{}) (interface{}, error) {
+func (s *UserService) Register(ctx context.Context, in interface{}) (interface{}, error) {
+	sp := tracing.CreateChildSpan(ctx, string(enum.StartService))
+	defer sp.Finish()
+	tracing.LogRequest(sp, in)
 
 	reqData := in.(*RegisterRequest)
 
@@ -55,18 +61,19 @@ func (s *UserService) Register(in interface{}) (interface{}, error) {
 
 	//TODO:Checker len FullName
 	if len(reqData.Fullname) < 2 {
+		tracing.LogError(sp, errors.New("Name should be 2 characters or more"))
 		return nil, errors.New("Name should be 2 characters or more")
 	}
 
 	//TODO: UsernameValidation
 	if !util.IsEmailValid(reqData.Username) {
-
+		tracing.LogError(sp, errors.New("Please provide a valid email address"))
 		return nil, errors.New("Please provide a valid email address")
 	}
 
 	//TODO:Checker len Password
 	if len(reqData.Password) < 12 {
-
+		tracing.LogError(sp, errors.New("Password should be at least 12 characters long"))
 		return nil, errors.New("Password should be at least 12 characters long")
 	}
 
@@ -74,65 +81,90 @@ func (s *UserService) Register(in interface{}) (interface{}, error) {
 	if len(reqData.Password) == len(reqData.TryPassword) {
 		for i := 0; i < len(reqData.Password); i++ {
 			if reqData.Password[i] != reqData.TryPassword[i] {
+				tracing.LogError(sp, errors.New("Confirmation password does not match"))
 				return nil, errors.New("Confirmation password does not match")
 			}
 		}
 	} else {
+		tracing.LogError(sp, errors.New("Confirmation password does not match"))
 		return nil, errors.New("Confirmation password does not match")
 	}
 
 	err := mapstructure.Decode(reqData, &request)
 	if err != nil {
+		tracing.LogError(sp, err)
 		return nil, err
 	}
 
-	res, err := s.repo.Register(request)
+	reqGetUser := &entity.UserRequest{Username: reqData.Username}
+	resUser, err := s.repo.GetUserByUsername(sp, reqGetUser)
 	if err != nil {
+		tracing.LogError(sp, err)
+		return nil, err
+	}
+	outUser := resUser.(*entity.UserResponse)
+	if outUser.Username != "" {
+		tracing.LogError(sp, errors.New("User Existing"))
+		return nil, errors.New("User Existing")
+	}
+
+	res, err := s.repo.Register(sp, request)
+	if err != nil {
+		tracing.LogError(sp, err)
 		return nil, err
 	}
 
 	err = mapstructure.Decode(res, &out)
 	if err != nil {
+		tracing.LogError(sp, err)
 		return nil, err
 	}
 
+	tracing.LogResponse(sp, out)
 	return s.out.RegisterResponse(out)
 }
 
-func (s *UserService) Login(in interface{}) (interface{}, error) {
-
+func (s *UserService) Login(ctx context.Context, in interface{}) (interface{}, error) {
+	sp := tracing.CreateChildSpan(ctx, string(enum.StartService))
+	defer sp.Finish()
+	tracing.LogRequest(sp, in)
 	reqData := in.(*LoginRequest)
 
 	//TODO: UsernameValidation
 	if !util.IsEmailValid(reqData.Username) {
+		tracing.LogError(sp, errors.New("Please provide a valid email address"))
 		return nil, errors.New("Please provide a valid email address")
 	}
 
 	//TODO:Checker len Password
 	if len(reqData.Password) < 12 {
+		tracing.LogError(sp, errors.New("Password should be at least 12 characters long"))
 		return nil, errors.New("Password should be at least 12 characters long")
 	}
 
 	reqGetUser := &entity.UserRequest{Username: reqData.Username}
-	res, err := s.repo.GetUserByUsername(reqGetUser)
+	res, err := s.repo.GetUserByUsername(sp, reqGetUser)
 	if err != nil {
+		tracing.LogError(sp, err)
 		return nil, err
 	}
 	outUser := res.(*entity.UserResponse)
 
 	//TODO: Password Validation
 	if util.HashSha512(reqData.Password) != outUser.Password {
+		tracing.LogError(sp, errors.New("Invalid username / password"))
 		return nil, errors.New("Invalid username / password")
 	}
 
 	//TODO: JwtToken Builder
 	reqJwt := &jwt_builder.TokenRequest{
 		Username: reqData.Username,
-		Fullname: reqData.Username,
+		Fullname: outUser.Fullname,
 	}
 
-	resJwt, err := jwt_builder.CreateJwtToken(reqJwt)
+	resJwt, err := jwt_builder.CreateJwtToken(sp, reqJwt)
 	if err != nil {
+		tracing.LogError(sp, err)
 		return nil, err
 	}
 
@@ -145,5 +177,6 @@ func (s *UserService) Login(in interface{}) (interface{}, error) {
 		Expired:  outJwt.Expired,
 	}
 
+	tracing.LogResponse(sp, out)
 	return out, nil
 }

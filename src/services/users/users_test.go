@@ -1,9 +1,11 @@
 package users
 
 import (
+	"context"
 	"edufund/src/domain/entity"
 	"edufund/src/mock/dto"
 	"edufund/src/mock/repository"
+	"edufund/src/shared/tracing"
 	"edufund/src/shared/util"
 	"errors"
 	. "github.com/smartystreets/goconvey/convey"
@@ -93,14 +95,17 @@ func TestUserService_Register(t *testing.T) {
 		Password:    "123412341244sss",
 		TryPassword: "123412341234",
 	}
-
+	ctx := context.Background()
+	ctx, closer, sp := tracing.StartRootSpan(ctx, "edufund-svc")
+	defer closer.Close()
+	defer sp.Finish()
 	Convey("Test Service Register", t, func() {
 		Convey("Positive Scenario", func() {
 			Convey("When Register Success, should return data", func() {
 				mockRepo.On("Register", reqEntity).Return(resEntity, nil).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqS)
+				res, err := sv.Register(ctx, reqS)
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
 			})
@@ -110,7 +115,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntity).Return(nil, errors.New("error")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqS)
+				res, err := sv.Register(ctx, reqS)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -118,7 +123,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntityPNMB).Return(nil, errors.New("Confirmation password does not match")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqSPNMB)
+				res, err := sv.Register(ctx, reqSPNMB)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -126,7 +131,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntityPNMA).Return(nil, errors.New("Confirmation password does not match")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqSPNMA)
+				res, err := sv.Register(ctx, reqSPNMA)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -134,7 +139,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntityP12).Return(nil, errors.New("Please provide a valid email address")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqSP12)
+				res, err := sv.Register(ctx, reqSP12)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -142,7 +147,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntityUV2).Return(nil, errors.New("Please provide a valid email address")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqSUV2)
+				res, err := sv.Register(ctx, reqSUV2)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -150,7 +155,7 @@ func TestUserService_Register(t *testing.T) {
 				mockRepo.On("Register", reqEntityf2).Return(nil, errors.New("Name should be 2 characters or more")).Once()
 				mockDto.On("RegisterResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Register(reqSF2)
+				res, err := sv.Register(ctx, reqSF2)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -209,14 +214,17 @@ func TestUserService_Login(t *testing.T) {
 		Username: "ratatagmail.com",
 		Password: "1234123412",
 	}
-
+	ctx := context.Background()
+	ctx, closer, sp := tracing.StartRootSpan(ctx, "edufund-svc")
+	defer closer.Close()
+	defer sp.Finish()
 	Convey("Test Service Register", t, func() {
 		Convey("Positive Scenario", func() {
 			Convey("When Login Success, should return data", func() {
 				mockRepo.On("GetUserByUsername", reqEntity).Return(resEntity, nil).Once()
 				mockDto.On("LoginResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Login(reqS)
+				res, err := sv.Login(ctx, reqS)
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
 			})
@@ -226,7 +234,7 @@ func TestUserService_Login(t *testing.T) {
 				mockRepo.On("GetUserByUsername", reqEntity).Return(resEntityIPU, nil).Once()
 				mockDto.On("LoginResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Login(reqSIPU)
+				res, err := sv.Login(ctx, reqSIPU)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -234,7 +242,7 @@ func TestUserService_Login(t *testing.T) {
 				mockRepo.On("GetUserByUsername", reqEntity).Return(nil, errors.New("error")).Once()
 				mockDto.On("LoginResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Login(reqS)
+				res, err := sv.Login(ctx, reqS)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -242,7 +250,7 @@ func TestUserService_Login(t *testing.T) {
 				mockRepo.On("GetUserByUsername", reqEntity).Return(resEntityP12, nil).Once()
 				mockDto.On("LoginResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Login(reqSP12)
+				res, err := sv.Login(ctx, reqSP12)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})
@@ -250,7 +258,7 @@ func TestUserService_Login(t *testing.T) {
 				mockRepo.On("GetUserByUsername", reqEntity).Return(resEntityP12, nil).Once()
 				mockDto.On("LoginResponse", resS).Return(resS, nil).Once()
 				sv := NewUserService(mockRepo, mockDto)
-				res, err := sv.Login(reqSPiV)
+				res, err := sv.Login(ctx, reqSPiV)
 				So(res, ShouldBeNil)
 				So(err, ShouldNotBeNil)
 			})

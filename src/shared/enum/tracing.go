@@ -5,8 +5,7 @@ type TracingName string
 const (
 	StartController TracingName = "Start Controller"
 	StartService    TracingName = "Start Service"
-
-	Error    TracingName = "Error"
-	Response TracingName = "Response"
-	Request  TracingName = "Request"
+	Error           TracingName = "Error"
+	Response        TracingName = "Response"
+	Request         TracingName = "Request"
 )

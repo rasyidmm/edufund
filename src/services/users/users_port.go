@@ -1,8 +1,10 @@
 package users
 
+import "context"
+
 type UsersInputPort interface {
-	Register(interface{}) (interface{}, error)
-	Login(interface{}) (interface{}, error)
+	Register(context.Context, interface{}) (interface{}, error)
+	Login(context.Context, interface{}) (interface{}, error)
 }
 
 type UsersOutputPort interface {

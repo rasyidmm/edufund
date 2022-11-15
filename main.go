@@ -22,7 +22,7 @@ func main() {
 	e := echo.New()
 	ctn := container.NewContainer()
 
-	tracer, closer := tracing.Init(e, "edufund", nil)
+	tracer, closer := tracing.Init("edufund")
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
